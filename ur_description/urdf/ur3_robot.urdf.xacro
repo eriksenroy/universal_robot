@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://wiki.ros.org/xacro"
        name="ur3" >
+    <property name="M_PI" value="3.14159265359" />
+    <property name="robot_prefix1" value=""/>
+
 
   <xacro:arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface"/>
 
@@ -16,13 +19,91 @@
     transmission_hw_interface="$(arg transmission_hw_interface)"
     kinematics_file="${load_yaml('$(arg kinematics_config)')}"
   />
+ 
+  <!-- arm extras 
+  <xacro:include filename="$(find ur_description)/urdf/arm_extras_ur3.urdf.xacro" /> -->
+
+    <!-- rg2 gripper -->
+  <xacro:include filename="$(find ur_description)/urdf/rg2.urdf.xacro" />
+
+  <!-- arm extras 
+  <xacro:arm_extras prefix="${robot_prefix1}" joint_limited="true"/> -->
+
+    <!-- rg2 pipe -->
+  <xacro:rg2 prefix="${robot_prefix1}" joint_limited="true"/>
 
   <link name="world" />
 
   <joint name="world_joint" type="fixed">
     <parent link="world" />
     <child link = "base_link" />
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+    <origin xyz="0.0 0.0 0.05" rpy="0.0 0.0 0.0" />
   </joint>
+
+  <!-- <link name="bar2">
+    <visual>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+      <material name="Steel">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+    </collision>
+  </link> -->
+
+  <joint name="base_to_table" type="fixed">
+    <parent link="base_link"/>
+    <child link="table"/>
+    <origin xyz="0 0 -0.02" rpy="0 0 0"/>
+  </joint>
+
+  <!-- <link name="bar1">
+    <visual>
+      <geometry>
+        <box size="0 0.0 0."/>
+      </geometry>
+      <material name="Steel">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="bar2_to_bar1" type="fixed">
+    <parent link="bar2"/>
+    <child link="bar1"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint> -->
+
+
+  <link name="table">
+    <visual>
+      <geometry>
+        <box size="1 1.0 0.02"/>
+      </geometry>
+      <material name="Wooden">
+        <color rgba="1.0 0.831 0.486 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1 1.0 0.02"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- <joint name="bar2_to_table" type="fixed">
+    <parent link="bar2"/>
+    <child link="table"/>
+    <origin xyz="0.0 0 0" rpy="0 0 0"/>
+  </joint> -->
 
 </robot>
